@@ -1,0 +1,50 @@
+T1 : lock(A), lock(B), lock(C), unlock(A), unlock(B), unlock(C)
+T2 : lock(A), lock(B), lock(C), unlock(C), unlock(B), unlock(A)
+T3 : lock(B), lock(C), unlock(B), unlock(C)
+T4 : lock(C), lock(A), unlock(A), unlock(C)
+
+
+
+T1                              T4
+lock(A)                         lock(C)
+lock(B)                         lock(A) => wait (A)
+lock(C) => wait (C)
+
+
+T2                       T4
+lock(A)                  lock(C)
+lock(B)                  lock(A) ==> wait
+lock(C) => wait
+
+T1              T2                       T3             T4
+lock(A)         lock(A) => wait (A)      lock(B)        lock(C)
+lock(B)=>wait   wait                     lock(C)=>wait  lock(A)=> wait
+
+
+1. Prevent:
+        acquire mutexes in the same order => when subset (A, B, C) (A, C) => rather than (C, A)
+
+        1.1 define order A < B < C
+        Require that all threads acquire mutexes in the same order.
+        no thread ever tries to acquire a mutex while holding another mutex further up in the order => see acquire
+
+        Acquire A (current holding A); acquire B (A B); release B; release A.    ==> valid
+        Acquire A (A); acquire B (A B); release A; release B.                    ==> valid
+
+
+        Acquire A (A); acquire B (AB); release B ; acquire B (AB); release B; release A.        ==> valid
+        Acquire A; acquire B; release B; acquire B; release A; release B                        ==> valid
+
+        Acquire A; acquire B; release A; acquire A (BA); …                                      ==> invalid 
+
+        T1              T2
+        lock(A)         
+        lock(B)
+        unlock(A)       
+                        lock(A)
+        lock(A) wait    lock(B) wait
+
+
+
+        Do we need to release them in reverse order? 
+        => my answer is not necessary

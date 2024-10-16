@@ -1,0 +1,55 @@
+prerequisite:
+In your own linux machine
+
+
+$ sudo apt-get install hexedit
+
+1. find the info of variable
+    $ readelf -s a.out | grep CHANGE_THIS
+
+    >>>  53: 0000000000011010     4 OBJECT  LOCAL  DEFAULT   22 CHANGE_THIS  
+    INFO we get 
+             address(virtual address)     4 bytes
+
+
+    Figure out which section it's in,
+    Figure out this value's section offset
+    Add its section offset to that section's file offset, 
+    to get your item's actual file offset (the "address" you would see in a hex editor, if you opened the ELF file).
+    
+2. check our variable is in which section
+    $ readelf -S a.out  // readelf --sections a.out
+
+    obviously, it should be in .data section, let's check
+
+    [Nr] Name              Type             Address           Offset ==> file offset
+       Size              EntSize          Flags  Link  Info  Align
+
+    [22] .data             PROGBITS         0000000000011000  00001000
+       0000000000000014  0000000000000000  WA       0     0     8
+
+    our .data  end is 0000000000011000 + 0000000000000014 = 0000000000011014
+    so [11000, 11014] is the range
+
+    11010 is in the range of [11000, 11014] ==> offset from start is 10
+
+
+    so the file offset is 10 as well
+    00001000
+    +     10
+    _________________
+        1010    ==>  File offset of `value` and chaneg it
+
+
+    Then use hexedit
+    hexedit a.out ==> Line 00001008 after 8 bytes ==> 
+
+    00001008   08 10 01 00  00 00 00 00  2A 00 00 00  47 43 43 3A  20 28 55 62  75 6E 74 75
+
+    Here 2A = 42 ! change it
+
+    Ctr+X => save and quit => Yes
+
+    run the executable
+    
+

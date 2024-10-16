@@ -1,0 +1,13 @@
+Most streams are fully buffered when you open them, and this is usually the best solution. 
+However, streams connected to interactive devices such as terminals are line-buffered when you open them; 
+yes, this means that `stdin` and `stdout` are line-buffered.
+
+Having `stdin` and `stdout` be line-buffered is convenient, 
+because most meaningful chunks of data you write to them are terminated with a newline character. 
+
+In order to ensure that the data you read from or write to a fully-buffered stream shows up right away, use the `fflush` function. 
+In the jargon, this is called flushing the stream. 
+Flushing moves the characters from the buffer to the file, if they haven't already been moved. 
+After the move, other functions can then work on the characters.[1](http://www.crasseux.com/books/ctutorial/Stream-buffering.html#fn-1)
+
+To use `fflush`, simply pass the function the stream you want to flush. The `fflush` function returns 0 if successful, or the value `EOF` (which is a macro defined in the GNU C Library) if there was a write error.

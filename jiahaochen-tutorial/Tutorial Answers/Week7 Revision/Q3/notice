@@ -1,0 +1,8 @@
++ we do not need dependency for header files because they are include in preprocessor
+
++ To remove file or directory forcefully, you can use the option -f force a deletion operation without rm prompting you for confirmation
+
++ make all: executable --> then makefile will try to find some tasks to finish executable
+	it's like a recursive function. IF we want get the target. We need to make sure every dependency exists.
+	If not, find some tasks generate these dependencies.
+	see  https://stackoverflow.com/questions/2514903/what-does-all-stand-for-in-a-makefile

@@ -1,0 +1,13 @@
+• What is a file descriptor and the file descriptor table
+    + A file descriptor is a number that uniquely 
+      identifies an open file in a computer's operating system
+
+    +  Translates an index number (file descriptor) in the table to an open file
+• What is a file and a stream
+    + The standard I/O library models an open file as a stream. To the programmer, a stream is a pointer to a structure of type FILE.
+    
+    + file: bytes
+         data in the file: abstract the file like an array of char, continuous flow of data
+• What is non-blocking IO, how does it differ from blocking IO
+    + non-blocking IO: wait for something, but at the same time you can do other things
+    + blocking IO: only wait

@@ -1,0 +1,1 @@
+int GLOBAL_VAL = 75;

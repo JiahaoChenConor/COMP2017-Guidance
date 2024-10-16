@@ -1,0 +1,14 @@
+signal 
+-asynchronous (good)
+-lost signal signal handler (bad)
+    multiple signal
+-only one int limited
+
+SO we need pips
+
+
+# check the return value of read
+# for deadlock set a time for terminating
+
+
+

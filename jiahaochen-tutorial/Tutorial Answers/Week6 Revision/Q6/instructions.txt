@@ -1,0 +1,4 @@
+ADD 9 10
+SUB % 10
+MUL 3 %
+DIV % 1

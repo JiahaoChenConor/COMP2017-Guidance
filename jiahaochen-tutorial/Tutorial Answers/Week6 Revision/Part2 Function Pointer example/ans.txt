@@ -1,0 +1,10 @@
+What would the pros and cons be of using typedef on a function pointer?
+    More readable
+    hide some important info, like return type..
+
+Why would we pass a function pointer to another function?
+    callback / call dynamically
+
+Has there been a programming language where you have used something similar?
+    an an anonymous class implementing an interface
+    https://stackoverflow.com/questions/1073358/function-pointers-in-java

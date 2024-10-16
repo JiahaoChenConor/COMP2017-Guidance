@@ -1,0 +1,91 @@
+1. `gcc -g -pg -Wall -Werror -std=gnu11 matrix.c -o matrix -pthread`
+2. Once the program is compiled for profiling, 
+    you must run it in order to generate the information that gprof needs. 
+    Simply run the program as usual, using the normal arguments, file names, etc. 
+    The program should run normally, producing the same output as usual. 
+    It will, however, run somewhat slower than normal because of the time spent 
+    collecting and the writing the profile data.
+3. `gprof ./matrix > mm.stats` to check `mm.stats`
+
+
+
+(a) Ensure the that -pg flag has been used to compile the program.
+(b) Execute the program as usual.
+(c) After the program has finished, execute the profiler:
+$ gprof ./matrix > mm.stats
+(d) View the saved information using less, which function is the bottleneck in the code and
+why?
+(e) You can use gprof -l to show statistics for each line of the source.
+    `gprof -l matrix`
+    `gprof -l ./matrix`
+
+
+
+Answer:
+1.
+    + which function is the bottleneck in the code and why
+        multiply vs hadamrad
+        ==> multiply O(n^3)
+
+    
+2. y, k, x instead of y, x, k
+    y, x, k => performance
+        %   cumulative   self              self     total           
+        time   seconds   seconds    calls  ms/call  ms/call  name    
+        100.00      0.65     0.65        1   650.00   650.00  multiply
+        0.00      0.65     0.00        2     0.00     0.00  hadamard
+
+    y, k, x
+        %   cumulative   self              self     total           
+        time   seconds   seconds    calls  ms/call  ms/call  name    
+        100.00      0.39     0.39        1   390.00   390.00  multiply
+        0.00      0.39     0.00        2     0.00     0.00  hadamard
+
+    
+    False sharing
+
+3. 
+
+
+    when y, x, k => i, j, k => faster than original without threads
+
+      %   cumulative   self              self     total           
+        time   seconds   seconds    calls  Ts/call  Ts/call  name    
+        100.00      0.59     0.59                             worker_multiply
+        0.00      0.59     0.00        2     0.00     0.00  hadamard
+        0.00      0.59     0.00        1     0.00     0.00  multiply
+
+    // for (size_t y = start; y < end; y++) {
+	// 	for (size_t x = 0; x < WIDTH; x++) {
+	// 		for (size_t k = 0; k < WIDTH; k++) {
+	// 			 wargs->result[IDX(x, y)] += wargs->a[IDX(k, y)] * wargs->b[IDX(x, k)];
+	// 		}
+	// 	}
+	// }
+
+
+    imporve false sharing
+        %   cumulative   self              self     total           
+        time   seconds   seconds    calls  Ts/call  Ts/call  name    
+        100.00      0.43     0.43                             worker_multiply
+        0.00      0.43     0.00        2     0.00     0.00  hadamard
+        0.00      0.43     0.00        1     0.00     0.00  multiply
+        
+    // // in the order of y, x, k => we can improve performance by uesing local variable
+	// for (size_t y = start; y < end; y++) {
+	// 	for (size_t x = 0; x < WIDTH; x++) {
+	// 		float res = 0;
+	// 		for (size_t k = 0; k < WIDTH; k++) {
+	// 			 res += wargs->a[IDX(k, y)] * wargs->b[IDX(x, k)];
+	// 		}
+	// 		wargs->result[IDX(x, y)] = res;
+	// 	}
+	// }
+
+
+
+    
+
+    
+
+
